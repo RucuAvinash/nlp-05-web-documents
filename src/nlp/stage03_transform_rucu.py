@@ -206,24 +206,41 @@ def run_transform(
     LOG.info("========================")
 
     # Primary subject from <div class="subheader">
-    subheader: Tag | None = soup.find("div", class_="subheader")
+    ##subheader: Tag | None = soup.find("div", class_="subheader")
 
     # Subjects may be in the format "Subjects: cs.AI (primary); cs.LG; stat.ML"
     # We can extract the primary subject and also keep the full list if needed.
 
     # subjects: str = subheader.get_text(strip=True) if subheader else "unknown"
     # LOG.info(f"Extracted subjects: {subjects}")
-    subjects_raw: str = subheader.get_text(strip=True) if subheader else "unknown"
+    ##subjects_raw: str = subheader.get_text(strip=True) if subheader else "unknown"
 
     # Clean the "Subjects:" prefix if present
-    subjects_raw = subjects_raw.replace("Subjects:", "").strip()
+    ##subjects_raw = subjects_raw.replace("Subjects:", "").strip()
 
     # Split into list on semicolon (arXiv separates multiple subjects with ";")
-    subjects_list: list[str] = [s.strip() for s in subjects_raw.split(";") if s.strip()]
+    ##subjects_list: list[str] = [s.strip() for s in subjects_raw.split(";") if s.strip()]
 
     # Rejoin as clean semicolon-separated string for storage
-    subjects: str = "; ".join(subjects_list)
-    subject_count: int = len(subjects_list)
+    ##subjects: str = "; ".join(subjects_list)
+    ##subject_count: int = len(subjects_list)
+
+    ## LOG.info(f"Extracted subjects raw: {subjects_raw}")
+    ## LOG.info(f"Extracted subjects list: {subjects_list}")
+    ## LOG.info(f"Extracted subjects: {subjects}")
+    ## LOG.info(f"Subject count: {subject_count}")
+    subjects_td = soup.find("td", class_="subjects")
+
+    if subjects_td:
+        subjects_raw = subjects_td.get_text(strip=True)
+        subjects_list = [s.strip() for s in subjects_raw.split(";") if s.strip()]
+        subjects = "; ".join(subjects_list)
+        subject_count = len(subjects_list)
+    else:
+        subjects_raw = "unknown"
+        subjects_list = []
+        subjects = "unknown"
+        subject_count = 0
 
     LOG.info(f"Extracted subjects raw: {subjects_raw}")
     LOG.info(f"Extracted subjects list: {subjects_list}")
